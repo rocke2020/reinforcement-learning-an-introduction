@@ -10,6 +10,9 @@
 
 import numpy as np
 import pickle
+from icecream import ic
+ic.configureOutput(includeContext=True, argToStringFunction=lambda _: str(_))
+ic.lineWrapWidth = 120
 
 BOARD_ROWS = 3
 BOARD_COLS = 3
@@ -207,16 +210,18 @@ class Player:
             else:
                 self.estimations[hash_val] = 0.5
 
-    # update value estimation
     def backup(self):
-        states = [state.hash() for state in self.states]
+        """ Updates the value estimation of the states, i.e. learns from experiences. 
+        The learned knowledge is stored in the estimations dictionary.
+        """
+        state_hash_values = [state.hash() for state in self.states]
 
-        for i in reversed(range(len(states) - 1)):
-            state = states[i]
+        for i in reversed(range(len(state_hash_values) - 1)):
+            state_hash_val = state_hash_values[i]
             td_error = self.greedy[i] * (
-                self.estimations[states[i + 1]] - self.estimations[state]
+                self.estimations[state_hash_values[i + 1]] - self.estimations[state_hash_val]
             )
-            self.estimations[state] += self.step_size * td_error
+            self.estimations[state_hash_val] += self.step_size * td_error
 
     # choose an action based on the state
     def act(self):
@@ -297,7 +302,8 @@ def train(epochs, print_every_n=500):
         if winner == -1:
             player2_win += 1
         if i % print_every_n == 0:
-            print('Epoch %d, player 1 winrate: %.02f, player 2 winrate: %.02f' % (i, player1_win / i, player2_win / i))
+            print('Epoch %d, player 1 winrate: %.02f, player 2 winrate: %.02f' % (
+                i, player1_win / i, player2_win / i))
         player1.backup()
         player2.backup()
         judger.reset()
@@ -342,5 +348,5 @@ def play():
 
 if __name__ == '__main__':
     train(int(1e5))
-    compete(int(1e3))
-    play()
+    # compete(int(1e3))
+    # play()
