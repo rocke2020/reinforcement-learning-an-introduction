@@ -10,9 +10,7 @@
 
 import numpy as np
 import pickle
-from icecream import ic
-ic.configureOutput(includeContext=True, argToStringFunction=lambda _: str(_))
-ic.lineWrapWidth = 120
+
 
 BOARD_ROWS = 3
 BOARD_COLS = 3
@@ -88,8 +86,16 @@ class State:
         new_state.data[i, j] = symbol
         return new_state
 
-    # print the board
     def print_state(self):
+        """  init board
+        -------------
+        | 0 | 0 | 0 |
+        -------------
+        | 0 | 0 | 0 |
+        -------------
+        | 0 | 0 | 0 |
+        -------------
+        """
         for i in range(BOARD_ROWS):
             print('-------------')
             out = '| '
@@ -210,8 +216,8 @@ class Player:
             else:
                 self.estimations[hash_val] = 0.5
 
-    def backup(self):
-        """ Updates the value estimation of the states, i.e. learns from experiences. 
+    def update_value_function(self):
+        """ Updates the value estimation of the states, i.e. learns from experiences.
         The learned knowledge is stored in the estimations dictionary.
         """
         state_hash_values = [state.hash() for state in self.states]
@@ -304,8 +310,8 @@ def train(epochs, print_every_n=500):
         if i % print_every_n == 0:
             print('Epoch %d, player 1 winrate: %.02f, player 2 winrate: %.02f' % (
                 i, player1_win / i, player2_win / i))
-        player1.backup()
-        player2.backup()
+        player1.update_value_function()
+        player2.update_value_function()
         judger.reset()
     player1.save_policy()
     player2.save_policy()
@@ -348,5 +354,5 @@ def play():
 
 if __name__ == '__main__':
     train(int(1e5))
-    # compete(int(1e3))
-    # play()
+    compete(int(1e3))
+    play()
