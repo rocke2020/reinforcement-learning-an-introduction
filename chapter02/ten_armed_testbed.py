@@ -12,7 +12,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import trange
-
+from scipy.special import softmax
 matplotlib.use('Agg')
 
 
@@ -66,8 +66,7 @@ class Bandit:
             return np.random.choice(np.where(UCB_estimation == q_best)[0])
 
         if self.gradient:
-            exp_est = np.exp(self.q_estimation)
-            self.action_prob = exp_est / np.sum(exp_est)
+            self.action_prob = softmax(self.q_estimation)
             return np.random.choice(self.indices, p=self.action_prob)
 
         q_best = np.max(self.q_estimation)
@@ -116,14 +115,14 @@ def simulate(runs, time, bandits):
 
 
 def figure_2_1():
-    plt.violinplot(dataset=np.random.randn(200, 10) + np.random.randn(10))
+    plt.violinplot(dataset=np.random.randn(200, 10) + np.random.randn(10), showmeans=True)
     plt.xlabel("Action")
     plt.ylabel("Reward distribution")
     plt.savefig('../images/figure_2_1.png')
     plt.close()
 
 
-def figure_2_2(runs=2000, time=1000):
+def figure_2_2(runs=2000, time=10000):
     epsilons = [0, 0.1, 0.01]
     bandits = [Bandit(epsilon=eps, sample_averages=True) for eps in epsilons]
     best_action_counts, rewards = simulate(runs, time, bandits)
@@ -164,7 +163,7 @@ def figure_2_3(runs=2000, time=1000):
     plt.close()
 
 
-def figure_2_4(runs=2000, time=1000):
+def figure_2_4(runs=2000, time=10000):
     bandits = []
     bandits.append(Bandit(epsilon=0, UCB_param=2, sample_averages=True))
     bandits.append(Bandit(epsilon=0.1, sample_averages=True))
@@ -236,9 +235,9 @@ def figure_2_6(runs=2000, time=1000):
 
 
 if __name__ == '__main__':
-    figure_2_1()
+    # figure_2_1()
     figure_2_2()
-    figure_2_3()
-    figure_2_4()
-    figure_2_5()
-    figure_2_6()
+    # figure_2_3()
+    # figure_2_4()
+    # figure_2_5()
+    # figure_2_6()
