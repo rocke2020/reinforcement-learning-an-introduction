@@ -139,7 +139,6 @@ def q_learning(q_value, step_size=ALPHA):
         state = next_state
     return rewards
 
-# print optimal policy
 def print_optimal_policy(q_value):
     optimal_policy = []
     for i in range(0, WORLD_HEIGHT):
@@ -255,4 +254,4 @@ def figure_6_6():
 
 if __name__ == '__main__':
     figure_6_4()
-    figure_6_6()
+    # figure_6_6()
