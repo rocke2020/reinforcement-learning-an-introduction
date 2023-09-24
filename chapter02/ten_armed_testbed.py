@@ -122,9 +122,9 @@ def figure_2_1():
     plt.close()
 
 
-def figure_2_2(runs=2000, time=10000):
+def figure_2_2(runs=2000, time=10000, sample_averages=True):
     epsilons = [0, 0.1, 0.01]
-    bandits = [Bandit(epsilon=eps, sample_averages=True) for eps in epsilons]
+    bandits = [Bandit(epsilon=eps, sample_averages=sample_averages) for eps in epsilons]
     best_action_counts, rewards = simulate(runs, time, bandits)
 
     plt.figure(figsize=(10, 20))
@@ -132,6 +132,7 @@ def figure_2_2(runs=2000, time=10000):
     plt.subplot(2, 1, 1)
     for eps, rewards in zip(epsilons, rewards):
         plt.plot(rewards, label='epsilon = %.02f' % (eps))
+    plt.title(f'{sample_averages} sample_averages')
     plt.xlabel('steps')
     plt.ylabel('average reward')
     plt.legend()
@@ -236,8 +237,8 @@ def figure_2_6(runs=2000, time=1000):
 
 if __name__ == '__main__':
     # figure_2_1()
-    # figure_2_2()
-    # figure_2_3()
+    # figure_2_2(sample_averages=False)
+    figure_2_3()
     # figure_2_4()
     # figure_2_5()
     figure_2_6()
